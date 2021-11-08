@@ -2,8 +2,8 @@
   "expo": {
     "name": "GuessANumberApp",
     "slug": "GuessANumberApp",
-    "version": "1.0.0",
-    "orientation": "portrait",
+    "version": "1.0.0", 
+    "orientation": "default",
     "icon": "./assets/icon.png",
     "splash": {
       "image": "./assets/splash.png",

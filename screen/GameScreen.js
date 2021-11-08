@@ -1,11 +1,12 @@
 import React, { useState , useRef , useEffect} from "react";
-import {Text , View , StyleSheet, Button, Alert, ScrollView, FlatList} from 'react-native';
+import {Text , View , StyleSheet, Button, Alert, ScrollView, FlatList , Dimensions} from 'react-native';
 import NumberContainer from "../component/NumberContainer";
 import Card from "../component/Card";
 import DefaultStyles from "../constants/Default-styles";
 import MainButton from "../component/MainButton";
 import { Ionicons } from '@expo/vector-icons';
 import BodyText from "../component/BodyText";
+import * as ScreenOrientation from 'expo-screen-orientation';
 
 const generateRandomBetween = (min, max, exclude) => {
     min = Math.ceil(min);
@@ -19,7 +20,7 @@ const generateRandomBetween = (min, max, exclude) => {
 }
 
 const renderListItem = (listLength, itemData) => (
-    <View style={styles.listItem}> 
+    <View style={styles.listItem}>
         <BodyText>#{listLength - itemData.index}</BodyText>
         <BodyText>{itemData.item}</BodyText>
     </View>
@@ -27,13 +28,31 @@ const renderListItem = (listLength, itemData) => (
       
 const GameScreen = props => {
 
+    // ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT);
+    //bu kodla istersek orientation ı kilitleyebiliyoruz,
+    
     const initialGuess = generateRandomBetween(1,100,props.userChoice);
     const [currentGuess, setCurrentGuess] = useState(initialGuess);
     const [pastGuesses, setPastGuesses] = useState([initialGuess.toString()]);
+    const [availableDeviceWidth, setAvailableDeviceWidth] = useState(Dimensions.get('window').width);
+    const [availableDeviceHeight, setAvailableDeviceHeight] = useState(Dimensions.get('window').height);
     const currentLow = useRef(1);
     const currentHigh = useRef(100);
 
     const {userChoice, onGameOver} = props;
+
+    useEffect(() => {
+        const updateLayout = () => {
+            setAvailableDeviceWidth(Dimensions.get('window').width);
+            setAvailableDeviceHeight(Dimensions.get('window').height);
+        };
+
+        Dimensions.addEventListener('change',updateLayout)
+
+        return () => {
+            Dimensions.removeEventListener('change',updateLayout);
+        };
+    });
 
     useEffect(() => {
         if(currentGuess === userChoice) {
@@ -60,6 +79,48 @@ const GameScreen = props => {
         setPastGuesses(curPastGuesses => [nextNumber.toString(), ...curPastGuesses] )
     };
 
+    let listContainerStyle = styles.listContainer;
+
+    if(availableDeviceWidth < 364){
+        listContainerStyle = styles.listContainerBig;
+    }
+
+    if(availableDeviceHeight < 511){
+        return (
+            <View style = {styles.screen} >
+              <Text style={DefaultStyles.title}>Karşı Tarafın Tahmini</Text>
+                <View style={styles.controls}>
+                    <MainButton onPress={nextGuessHandler.bind(this, 'lower')} >
+                        <Ionicons name="md-arrow-down" size={24} color="black" />
+                    </MainButton>
+
+                     {/*<NumberContainer>{currentGuess}</NumberContainer>*/}
+                    <View style={styles.container} >
+                     <Text style={styles.number} >
+                         {currentGuess}
+                     </Text>
+                    </View>
+            
+                    <MainButton onPress={nextGuessHandler.bind(this, 'greater')} >
+                        <Ionicons name="md-arrow-up" size={24} color="black" />   
+                    </MainButton>
+                </View>
+                <View style={listContainerStyle}>
+                    {/*<ScrollView contentContainerStyle={styles.list} >
+                        {pastGuesses.map((guess, index) => renderListItem(guess, pastGuesses.length - index))}
+                    </ScrollView>*/}
+
+                    <FlatList 
+                        keyExtractor={(item) => item} 
+                        data={pastGuesses} 
+                        renderItem={renderListItem.bind(this, pastGuesses.length)} 
+                        contentContainerStyle={styles.list}
+                    />
+                </View>
+            </View>
+        );
+    }
+
     return(
         <View style = {styles.screen} >
             <Text style={DefaultStyles.title}>Karşı Tarafın Tahmini</Text>
@@ -77,7 +138,7 @@ const GameScreen = props => {
                     <Ionicons name="md-arrow-up" size={24} color="black" />   
                 </MainButton>
             </Card>
-            <View style={styles.listContainer}>
+            <View style={listContainerStyle}>
                 {/*<ScrollView contentContainerStyle={styles.list} >
                     {pastGuesses.map((guess, index) => renderListItem(guess, pastGuesses.length - index))}
                 </ScrollView>*/}
@@ -90,9 +151,7 @@ const GameScreen = props => {
                      />
             </View>
         </View>
-
     );
-
 };
 
 const styles = StyleSheet.create({
@@ -104,10 +163,11 @@ const styles = StyleSheet.create({
     buttonContainer:{
         flexDirection:'row',
         justifyContent:'space-around',
-        marginTop:20,
+        marginTop:Dimensions.get('window').height > 600 ? 30:8 ,
         width:300,
         maxWidth:'80%',
         marginBottom:20
+        
     },
     listItem:{
         borderColor:'black',
@@ -120,9 +180,21 @@ const styles = StyleSheet.create({
         justifyContent:'space-between', 
         width:'100%'
     },
+    controls:{
+        flexDirection:'row',
+        justifyContent:'space-around',
+        alignItems:'center',
+        width:'79%'
+    },
     listContainer:{
         flex:1, 
-        width:'60%'
+        //width: Dimensions.get('window').width > 375 ? '60%' : '80%'
+        //500 den büyükse 60 değilse 80    
+        width:'60%'     
+    },
+    listContainerBig:{
+        flex:1,
+        width:'80%'
     },
     list:{
         flexGrow:1,

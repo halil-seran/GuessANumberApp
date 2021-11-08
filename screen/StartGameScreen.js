@@ -1,9 +1,9 @@
 import React from "react";
-import { View , StyleSheet , Text ,Button , TouchableWithoutFeedback, Touchable , Keyboard, Alert} from 'react-native'; 
+import { View , StyleSheet , Text ,Button , TouchableWithoutFeedback, Touchable , Keyboard, Alert , Dimensions , ScrollView , KeyboardAvoidingView} from 'react-native'; 
 import Card from "../component/Card";
 import colors from "../constants/colors";
 import Input from "../component/Input";
-import { useState } from 'react';
+import { useState , useEffect } from 'react';
 import NumberContainer from "../component/NumberContainer";
 import BodyText from "../component/BodyText";
 import TitleText from "../component/TitleText";
@@ -13,6 +13,12 @@ const StartGameScreen = props => {
     const [enteredValue, setEnteredValue] = useState('');
     const [corfirmed, setCorfirmed] = useState(false);
     const [selectedNumber, setSelectedNumber] = useState();
+    const [buttonWidth , setButtonWidth] = useState(Dimensions.get('window').width / 4);
+
+   // const updateLayout = () => {
+    //    setButtonWidth(Dimensions.get('window').width / 4)
+    //};
+    //Dimensions.addEventListener('change',updateLayout);
 
     const numberInputHandler = inputText => {
         setEnteredValue(inputText.replace(/[^0-9]/g, ''));
@@ -22,6 +28,16 @@ const StartGameScreen = props => {
         setEnteredValue('');
         setCorfirmed(false);
     };
+
+    useEffect(() => {
+        const updateLayout = () => {
+            setButtonWidth(Dimensions.get('window').width / 4)
+        };
+        Dimensions.addEventListener('change',updateLayout);
+        return () => {
+            Dimensions.removeEventListener('change',updateLayout)
+        };
+    });
 
     const confirmInputHandler = () => {
             const chosenNumber = parseInt(enteredValue);
@@ -57,7 +73,12 @@ const StartGameScreen = props => {
         </Card>
     }
 
+    //iosta position android de padding en etkili line:65 behavior
+    
+
     return (
+        <ScrollView style={{marginTop:20}}>
+        <KeyboardAvoidingView behavior='position' keyboardVerticalOffset={30}>
         <TouchableWithoutFeedback onPress={ () => {
             Keyboard.dismiss();
         }} >
@@ -74,10 +95,10 @@ const StartGameScreen = props => {
                 onChangeText={numberInputHandler}
                 value={enteredValue} />
                 <View style={styles.buttonContainer}>
-                    <View style = {styles.button}> 
+                    <View style = {{width:buttonWidth,paddingTop:25}}> 
                          <Button title='İPTAL' onPress={resetInputHandler} color="lightseagreen"/> 
                     </View>
-                    <View style = {styles.button}> 
+                    <View style = {{width:buttonWidth,paddingTop:25}}> 
                          <Button title='Onayla' onPress={confirmInputHandler} color="cornflowerblue"/> 
                     </View>
                 </View>
@@ -87,6 +108,8 @@ const StartGameScreen = props => {
             {confirmedOutput}
         </View>
         </TouchableWithoutFeedback>
+        </KeyboardAvoidingView>
+        </ScrollView>
     );
 };
 
@@ -104,8 +127,10 @@ const styles = StyleSheet.create({
     },
     inputContainer:{
         height:187,
-        width:300,
-        maxWidth:'80%', 
+        width:'80%',
+        minWidth:300,
+        maxWidth:'95%',
+        // maxWidth:'80%', 
         alignItems:'center',
         backgroundColor:colors.primary,
         
@@ -117,10 +142,11 @@ const styles = StyleSheet.create({
         fontFamily:'open-sans-bold'
 
     },
-    button:{
-        width:100,
-        paddingTop:25
-    },
+   // button:{
+     //   width:100,
+       // width:Dimensions.get('window').width / 4, //this is only calculated app starts
+        //paddingTop:25
+    //},
     input:{
         textAlign:'center',
         fontSize:30
