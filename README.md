@@ -7,7 +7,7 @@ this is because of a restriction from Apple
                                                                                                                                                                                                                                                                                                                                                                        
 How can you run my app easly?                                                                                                                                                       
 open https://snack.expo.dev/                                                                                                                                                       
-install expo go app your android or you can use snack's android emulator it is complex.                                                                                             
+install expo go app your android or you can use snack's android emulator but it is a little bit complicated.                                                                       
 play store expo go link https://play.google.com/store/apps/details?id=host.exp.exponent&hl=tr&gl=US                                                                                 
 install my code and import it to Snack                                                                                                                                             
 import or install all dependencies below the website Snack                                                                                                                         
