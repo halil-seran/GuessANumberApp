@@ -5,11 +5,11 @@ this is because of a restriction from Apple
                                                                                                                                                                                    
                                                                                                                                                                                                                                                                                                                                                                        
                                                                                                                                                                                                                                                                                                                                                                        
-How can you run my app easly?                                                                                                                                                       
+How can you run my app easily?                                                                                                                                                     
 open https://snack.expo.dev/                                                                                                                                                       
-install expo go app your android or you can use snack's android emulator but it is a little bit complicated.                                                                       
+install expo go app on your android device or you can use snack's android emulator but it is a little bit complicated.                                                             
 play store expo go link https://play.google.com/store/apps/details?id=host.exp.exponent&hl=tr&gl=US                                                                                 
 install my code and import it to Snack                                                                                                                                             
 import or install all dependencies below the website Snack                                                                                                                         
 open expo on your phone                                                                                                                                                             
-and scan QR code on Snack and thats it!                                                                                                                                               
+and scan QR code on Snack and thats all!                                                                                                                                               
