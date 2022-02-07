@@ -4,3 +4,4 @@
 <h4>Its just a mini-game  </h4>
 <h4>This app include adaptive and responsive screen layouts</h4>
 <h4>i learned here how to use responsive design ve adaptive design on a app</h4>
+ 
