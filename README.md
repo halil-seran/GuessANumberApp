@@ -6,4 +6,3 @@
 <h4>i learned here how to use responsive design ve adaptive design on a app</h4>
  
  
- 
